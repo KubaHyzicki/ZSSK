@@ -13,29 +13,29 @@ class Task():
 
     @property
     def time_until_finish(self):
-        if status in ['ongoing', 'waiting']:
+        if self.status in ['ongoing', 'waiting']:
             return self.duration - time_ongoing
         else:
             return False
 
     def switch_state(self):
-        if status == 'ready':
-            status = 'ongoing'
+        if self.status == 'ready':
+            self.status = 'ongoing'
             time_ready = 0
-        elif status == 'ongoing':
+        elif self.status == 'ongoing':
             if self.time_until_finish == 0:
-                status = 'ready'
+                self.status = 'ready'
                 time_ongoing = 0
             else:
-                status = 'waiting'
-        elif status == 'waiting':
-            status = 'ongoing'
+                self.status = 'waiting'
+        elif self.status == 'waiting':
+            self.status = 'ongoing'
             time_waiting = 0
 
     def time_tick(self):
-        if status == 'ready':
+        if self.status == 'ready':
             time_ready += 1
-        elif status == 'ongoing':
+        elif self.status == 'ongoing':
             time_ongoing += 1
-        elif status == 'waiting':
+        elif self.status == 'waiting':
             time_waiting += 1
