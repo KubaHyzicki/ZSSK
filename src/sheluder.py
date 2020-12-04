@@ -1,5 +1,5 @@
 import logging
-import random
+from random import randrange
 
 from src.task import Task
 
@@ -16,13 +16,19 @@ class Sheluder():
         tasks = []
         min, max = durations
         for i in range(0, tasks_amount):
-            tasks.append(Task(id=i, run_time=randrange(min, max, 1)))
+            tasks.append(Task(id=i, duration=randrange(min, max, 1)))
         return tasks
 
     def define_durations(self, tasks_amount, durations):
         tasks = []
         if not tasks_amount == len(durations):
             logging.error("Tasks amount does not match durations list")
+            exit(1)
         for i in range(0, tasks_amount):
-            tasks.append(Task(id=i, run_time=durations[i]))
+            tasks.append(Task(id=i, duration=durations[i]))
         return tasks
+
+    def run(self):
+        for task in self.tasks:
+            print(task.duration)
+        raise NotImplementedError
