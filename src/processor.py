@@ -36,8 +36,9 @@ class Processor():
         if not self.task:
             self.task = self.choose()
             if not self.task:
-                logging.warning("Processor {} could not find any task to proceed".format(self.id))
+                logging.debug("Processor {} could not find any task to proceed".format(self.id))
             else:
+                logging.debug("Processor {}: proceeding with task {}".format(self.id, self.task.id))
                 self.task.switch_state()
 
     def stop(self):

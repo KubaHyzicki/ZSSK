@@ -48,7 +48,6 @@ class Sheluder():
         #Starting tasks
         for task in self.tasks:
             task.start()
-            logging.info("Task {} started. Duration {}".format(task.id, task.duration))
 
         #Main loop
         try:

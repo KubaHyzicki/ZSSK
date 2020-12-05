@@ -16,7 +16,7 @@ class Task(Thread):
         self.current_left = duration
 
     def run(self):
-        logging.info("Starting task {}".format(self.id))
+        logging.info("Starting task {}. Duration {}".format(self.id, self.duration))
         self.start = Task.get_time()
         self.stopper.wait()
 
@@ -41,7 +41,7 @@ class Task(Thread):
 
     @property
     def isDone(self):
-        if self.status == "ongoing":
+        if self.status in ['ongoing', 'waiting']:
             return self.time_until_finish > 0
         else:
             return False
@@ -50,21 +50,21 @@ class Task(Thread):
     def switch_state(self):
         if self.status == 'ready':
             self.status = 'ongoing'
-            logging.info("Switching Task {} state: ready -> ongoing".format(self.id))
+            logging.debug("Switching Task {} state: ready -> ongoing".format(self.id))
         elif self.status == 'waiting':
             self.status = 'ongoing'
-            logging.info("Switching Task {} state: waiting -> ongoing".format(self.id))
+            logging.debug("Switching Task {} state: waiting -> ongoing".format(self.id))
         elif self.status == 'ongoing':
             #freezing time when check starts as there is "space" between time_until_finish usages
             time_until_finish = self.time_until_finish
             if self.isDone:
-                self.status = 'waiting'
-                self.current_left = time_until_finish
-                logging.info("Switching Task {} state: ongoing -> waiting ({} left)".format(self.id, time_until_finish))
-            else:
                 self.status = 'ready'
                 self.current_left = self.duration
-                logging.info("Switching Task {} state: ongoing -> ready".format(self.id))
+                logging.debug("Switching Task {} state: ongoing -> ready".format(self.id))
+            else:
+                self.status = 'waiting'
+                self.current_left = time_until_finish
+                logging.debug("Switching Task {} state: ongoing -> waiting ({} left)".format(self.id, time_until_finish))
         self.start = Task.get_time()
 
     # def time_tick(self):
