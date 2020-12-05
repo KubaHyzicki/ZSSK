@@ -23,8 +23,9 @@ class Sheluder():
         if randomize_durations:
             min, max = durations
             for i in range(0, tasks_amount):
-                task = Task(id = i, duration = randrange(min, max, 1), stopper = self.stopper)
-                self.tasks.append(task)
+                self.tasks.append(Task(id = i,
+                    duration = randrange(min, max, 1),
+                    stopper = self.stopper))
             return tasks
         else:
             if not tasks_amount == len(durations):
@@ -55,6 +56,8 @@ class Sheluder():
                 for processor in self.processors:
                     processor.run()
                 sleep(self.timeChunk)
+                for task in self.tasks:
+                    task.time_tick()
                 for processor in self.processors:
                     processor.stop()
         except KeyboardInterrupt:
