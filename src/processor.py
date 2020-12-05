@@ -2,30 +2,29 @@ from importlib import import_module
 from time import sleep
 import logging
 
-from src.strategies import *
-
 class Processor():
     def __init__(self, id, tasks_list, strategy, arbitrationRule, expropriation = True):
         self.id = id
         self.tasks = tasks_list
+        self.expropriation = expropriation
         self.selectStrategy(strategy)
         self.selectArbitrationRule(arbitrationRule)
-        self.expropriation = expropriation
 
         self.task = None
 
     def selectStrategy(self, strategy):
         try:
             module = import_module("src.strategies.{}".format(strategy))
-            self.strategy = getattr(module, strategy.title())(self.tasks, self.expropriation)
-        except (AttributeError, ImportError):
+            self.strategy = getattr(module, strategy[0].upper() + strategy[1:])(self.tasks, self.expropriation)
+        except (AttributeError, ImportError) as e:
+            print(e)
             logging.error("Selected strategy could not be loaded! Exiting...")
             exit(1)
 
     def selectArbitrationRule(self, arbitrationRule):
         try:
             module = import_module("src.arbitrationRules.{}".format(arbitrationRule))
-            self.arbitrationRule = getattr(module, arbitrationRule.title())(self.tasks)
+            self.arbitrationRule = getattr(module, arbitrationRule[0].upper() + arbitrationRule[1:] )(self.tasks)
         except (AttributeError, ImportError) as e:
             print(e)
             logging.error("Selected arbitration rule could not be loaded! Exiting...")

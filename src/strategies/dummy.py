@@ -3,6 +3,9 @@
 from src.strategies.strategy import Strategy
 
 class Dummy(Strategy):
+    forExpropriating = True
+    forNonExpropriating = True
+
     def choose(self, tasks):
         chosen_tasks = []
         for task in tasks:

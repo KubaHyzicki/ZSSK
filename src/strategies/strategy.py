@@ -9,11 +9,11 @@ class Strategy():
 
     def checkExpropration(self, expropriation):
         if expropriation:
-            if self.forExpropriating:
+            if not self.forExpropriating:
                 logging.error("This algorithm is not desined for expropriation mode!")
                 exit(1)
         else:
-            if self.forNonExpropriating:
+            if not self.forNonExpropriating:
                 logging.error("This algorithm is not desined for non-expropriation mode!")
                 exit(1)
 

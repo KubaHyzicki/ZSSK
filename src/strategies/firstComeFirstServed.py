@@ -1,5 +1,7 @@
 import logging
 
+from src.strategies.strategy import Strategy
+
 class FirstComeFirstServed(Strategy):
     forExpropriating = True
 
@@ -7,15 +9,15 @@ class FirstComeFirstServed(Strategy):
         chosen_tasks = [tasks[0]]
         current_max = tasks[0].currentStateTime
         for task in tasks:
-            if task.status not in ['waiting', 'ready']
+            if task.status not in ['waiting', 'ready']:
                 continue
-            else
+            else:
                 task_max = task.currentStateTime
-                if task_max > current_max
+                if task_max > current_max:
                     current_max = task_max
                     chosen_tasks = [task]
                 elif task_max < current_max:
-                    continue:
+                    continue
                 else:
                     chosen_tasks.append(task)
         return chosen_tasks
