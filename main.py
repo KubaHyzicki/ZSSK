@@ -10,7 +10,7 @@ def parse_arguments():
 
     parser.add_argument('--verbose', '-v', action = 'store_true', required = False, help = 'Sets logging type to DEBUG')
 
-    parser.add_argument('--strategy', '-s', required = True, choices = ['dummy', 'firstComeFirstServed', 'lastComeFirstServed', 'ShortestJob'], help = 'Choose strategy for planning tasks')
+    parser.add_argument('--strategy', '-s', required = True, choices = ['dummy', 'firstComeFirstServed', 'lastComeFirstServed', 'shortestJob', 'shortestRemainingTime', 'roundRobin'], help = 'Choose strategy for planning tasks')
     parser.add_argument('--arbitration', '-a', required = True, choices = ['dummy', 'random', 'cycle', 'chronological'], help = 'Choose arbitration rule to choose between same priority tasks')
     parser.add_argument('--expropriation', '-e', action = 'store_true', required = False, help = 'Don\'t expropriate tasks after each chunk of time')
 
