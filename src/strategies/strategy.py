@@ -1,3 +1,5 @@
+import logging
+
 class Strategy():
     def __init__(self, tasks):
         pass
