@@ -39,6 +39,14 @@ class Task(Thread):
     def time_ready(self):
         return Task.get_time() - self.start
 
+    @property
+    def isDone(self):
+        if self.status == "ongoing":
+            return self.time_until_finish > 0
+        else:
+            return False
+
+
     def switch_state(self):
         if self.status == 'ready':
             self.status = 'ongoing'
@@ -49,7 +57,7 @@ class Task(Thread):
         elif self.status == 'ongoing':
             #freezing time when check starts as there is "space" between time_until_finish usages
             time_until_finish = self.time_until_finish
-            if time_until_finish > 0:
+            if self.isDone:
                 self.status = 'waiting'
                 self.current_left = time_until_finish
                 logging.info("Switching Task {} state: ongoing -> waiting ({} left)".format(self.id, time_until_finish))

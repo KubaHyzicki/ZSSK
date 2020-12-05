@@ -1,28 +1,56 @@
+from importlib import import_module
 from time import sleep
 import logging
 
+from src.strategies import *
+
 class Processor():
-    def __init__(self, id, tasks_list):
+    def __init__(self, id, tasks_list, strategy, arbitrationRule, expropriation = True):
         self.id = id
         self.tasks = tasks_list
+        self.selectStrategy(strategy)
+        self.selectArbitrationRule(arbitrationRule)
+        self.expropriation = expropriation
+
         self.task = None
 
+    def selectStrategy(self, strategy):
+        try:
+            module = import_module("src.strategies.{}".format(strategy))
+            self.strategy = getattr(module, strategy.title())()
+        except (AttributeError, ImportError):
+            logging.error("Selected strategy could not be loaded! Exiting...")
+            exit(1)
+
+    def selectArbitrationRule(self, arbitrationRule):
+        try:
+            module = import_module("src.arbitrationRules.{}".format(arbitrationRule))
+            self.arbitrationRule = getattr(module, arbitrationRule.title())()
+        except (AttributeError, ImportError) as e:
+            print(e)
+            logging.error("Selected arbitration rule could not be loaded! Exiting...")
+            exit(1)
+
+
     def run(self):
-        self.task = self.choose()
         if not self.task:
-            logging.warning("Processor {} could not find any task to proceed".format(self.id))
-        else:
-            self.task.switch_state()
+            self.task = self.choose()
+            if not self.task:
+                logging.warning("Processor {} could not find any task to proceed".format(self.id))
+            else:
+                self.task.switch_state()
 
     def stop(self):
         if self.task:
-            self.task.switch_state()
-            self.task = None
-
+            if self.expropriation or self.task.isDone:
+                self.task.switch_state()
+                self.task = None
 
     def choose(self):
-    #choose based on strategy
-        for task in self.tasks:                    # <- dummy strategy for implementation tests
-            if task.status in ['ready', 'waiting']:
-                return task
-        return False
+        chosen_tasks = self.strategy.choose(self.tasks)
+        if len(chosen_tasks) > 1:
+            return self.arbitrationRule.choose(chosen_tasks)
+        elif len(chosen_tasks) == 1:
+            return chosen_tasks[0]
+        else:
+            return False

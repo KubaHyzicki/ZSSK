@@ -2,4 +2,4 @@ if [[ ! $1 == "--raw" ]]; then
 	source prepare.sh
 fi
 
-python3 main.py --verbose --tasks 3 --processors 1 --durations 2 3 4
+python3 main.py --verbose --strategy dummy --arbitration dummy --expropriation --processors 1 --tasks 3 --durations 2 3 4
