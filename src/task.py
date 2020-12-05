@@ -12,12 +12,13 @@ class Task(Thread):
         self.duration = duration
         self.stopper = stopper
         self.priority = priority
+        self.start_time = 0
 
         self.current_left = duration
 
     def run(self):
         logging.info("Starting task {}. Duration {}".format(self.id, self.duration))
-        self.start = Task.get_time()
+        self.start_time = Task.get_time()
         self.stopper.wait()
 
     @property
@@ -29,20 +30,20 @@ class Task(Thread):
 
     @property
     def time_ongoing(self):
-        return Task.get_time() - self.start
+        return Task.get_time() - self.start_time
 
     @property
     def time_waiting(self):
-        return Task.get_time() - self.start
+        return Task.get_time() - self.start_time
 
     @property
     def time_ready(self):
-        return Task.get_time() - self.start
+        return Task.get_time() - self.start_time
 
     @property
     def isDone(self):
         if self.status in ['ongoing', 'waiting']:
-            return self.time_until_finish > 0
+            return self.time_until_finish <= 0
         else:
             return False
 
@@ -65,16 +66,9 @@ class Task(Thread):
                 self.status = 'waiting'
                 self.current_left = time_until_finish
                 logging.debug("Switching Task {} state: ongoing -> waiting ({} left)".format(self.id, time_until_finish))
-        self.start = Task.get_time()
-
-    # def time_tick(self):
-    #     if self.status == 'ready':
-    #         self.time_ready += 1
-    #     elif self.status == 'ongoing':
-    #         self.time_ongoing += 1
-    #     elif self.status == 'waiting':
-    #         self.time_waiting += 1
+        self.start_time = Task.get_time()
 
     @staticmethod
     def get_time():
         return time.clock() * 10000
+        # return int(time.clock() * 10000)      #alternative for more chunky approach

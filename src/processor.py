@@ -17,7 +17,7 @@ class Processor():
     def selectStrategy(self, strategy):
         try:
             module = import_module("src.strategies.{}".format(strategy))
-            self.strategy = getattr(module, strategy.title())()
+            self.strategy = getattr(module, strategy.title())(self.tasks)
         except (AttributeError, ImportError):
             logging.error("Selected strategy could not be loaded! Exiting...")
             exit(1)
@@ -25,7 +25,7 @@ class Processor():
     def selectArbitrationRule(self, arbitrationRule):
         try:
             module = import_module("src.arbitrationRules.{}".format(arbitrationRule))
-            self.arbitrationRule = getattr(module, arbitrationRule.title())()
+            self.arbitrationRule = getattr(module, arbitrationRule.title())(self.tasks)
         except (AttributeError, ImportError) as e:
             print(e)
             logging.error("Selected arbitration rule could not be loaded! Exiting...")
