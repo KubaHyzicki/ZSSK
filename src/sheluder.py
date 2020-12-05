@@ -41,14 +41,18 @@ class Sheluder():
             logging.info("Task {} started. Duration {}".format(task.id, task.duration))
 
         #main loop
-        while True:                             #to be changed to event
-            for processor in self.processors:
-                processor.run()
-            sleep(1)
-            for processor in self.processors:
-                processor.stop()
+        try:
+            while True:
+                for processor in self.processors:
+                    processor.run()
+                sleep(1)
+                for processor in self.processors:
+                    processor.stop()
+        except KeyboardInterrupt:
+            logging.info("Interrupted. Safety exiting...")
+            pass
 
         self.stopper.set()
         self.stopper.clear()
-        for thread in threading.enumerate():
-            thread.join()
+        for task in self.tasks:
+            task.join()
