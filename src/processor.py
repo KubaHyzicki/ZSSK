@@ -17,7 +17,7 @@ class Processor():
     def selectStrategy(self, strategy):
         try:
             module = import_module("src.strategies.{}".format(strategy))
-            self.strategy = getattr(module, strategy.title())(self.tasks)
+            self.strategy = getattr(module, strategy.title())(self.tasks, self.expropriation)
         except (AttributeError, ImportError):
             logging.error("Selected strategy could not be loaded! Exiting...")
             exit(1)

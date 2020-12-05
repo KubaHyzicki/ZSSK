@@ -1,6 +1,8 @@
 import logging
 
 class FirstComeFirstServed(Strategy):
+    forExpropriating = True
+
     def choose(self, tasks):
         chosen_tasks = [tasks[0]]
         current_max = tasks[0].currentStateTime

@@ -1,6 +1,8 @@
 import logging
 
 class ShortestJob(Strategy):
+    forExpropriating = True
+
     def choose(self, tasks):
         chosen_tasks = [tasks[0]]
         current_min = tasks[0].current_left
