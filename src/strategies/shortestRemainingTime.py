@@ -5,7 +5,7 @@ from src.strategies.strategy import Strategy
 class ShortestRemainingTime(Strategy):
     forNonExpropriating = True
 
-    def choose(self, tasks, expropriation):
+    def choose(self, tasks):
         chosen_tasks = [tasks[0]]
         current_min = tasks[0].current_left
         for task in tasks:

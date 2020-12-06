@@ -6,6 +6,7 @@ class RoundRobin(Strategy):
     forNonExpropriating = True
 
     def __init__(self, tasks, expropriation):
+        super(RoundRobin, self).__init__(tasks, expropriation)
         self.queue = [task.id for task in tasks]
 
     def choose(self, tasks):
