@@ -92,7 +92,7 @@ class Sheluder():
         else:
             averageWaitingTimes.append(sum(waitingTimes) / len(waitingTimes))
         averageWaitingTime = sum(waitingTimes) / len(waitingTimes)
-        logging.info("Average waiting time: {}".format())
+        logging.info("Average waiting time: {}".format(averageWaitingTime))
         logging.info("Average waiting times: {}".format(sorted(averageWaitingTimes)))
         logging.info("Task executions: {}".format(sorted(executions)))
         logging.info("Average executions per task: {}".format(sum(executions) / len(executions)))
