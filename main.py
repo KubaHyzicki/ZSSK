@@ -14,6 +14,7 @@ def parse_arguments():
     parser.add_argument('--arbitration', '-a', required = True, choices = ['dummy', 'random', 'cycle', 'chronological'], help = 'Choose arbitration rule to choose between same priority tasks')
     parser.add_argument('--expropriation', '-e', action = 'store_true', required = False, help = 'Don\'t expropriate tasks after each chunk of time')
 
+    parser.add_argument('--iterations', '-i', type = int, required = False, help = 'Amount of time chunks application should process')
     parser.add_argument('--timeChunk', '-T', type = int, metavar=('seconds'), required = False, default = '1', help = 'Define time chunk length[seconds]')
 
     parser.add_argument('--processors', '-p', type = int, required = True, help = 'Processors amount')
@@ -40,10 +41,16 @@ def main():
         duration = args.durations
         randomize_durations = False
 
+    if args.iterations:
+        iterations = args.iterations
+    else:
+        iterations = False
+
     sheluder = Sheluder(
         strategy = args.strategy,
         arbitration = args.arbitration,
         expropriation = args.expropriation,
+        iterations = iterations,
         timeChunk = args.timeChunk,
         tasks_amount = args.tasks,
         processors_amount = args.processors,

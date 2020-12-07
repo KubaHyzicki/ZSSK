@@ -13,6 +13,9 @@ class Task(Thread):
         self.stopper = stopper
         self.priority = priority
 
+        self.savedTimes = []
+        self.executions = 0
+
         # self.start_time = 0
         self.currentStateTime = 0
 
@@ -56,6 +59,7 @@ class Task(Thread):
 
 
     def switch_state(self):
+        self.saveTime()
         if self.status == 'ready':
             self.status = 'ongoing'
             logging.debug("Switching Task {} state: ready -> ongoing".format(self.id))
@@ -68,6 +72,7 @@ class Task(Thread):
             if self.isDone:
                 self.status = 'ready'
                 self.current_left = self.duration
+                self.executions += 1
                 logging.debug("Switching Task {} state: ongoing -> ready".format(self.id))
             else:
                 self.status = 'waiting'
@@ -75,3 +80,7 @@ class Task(Thread):
                 logging.debug("Switching Task {} state: ongoing -> waiting ({} left)".format(self.id, time_until_finish))
         self.currentStateTime = 0
         # self.start_time = Task.get_time()
+
+    def saveTime(self):
+        if self.status in ['ready', 'waiting']:
+            self.savedTimes.append(self.currentStateTime)

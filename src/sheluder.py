@@ -1,5 +1,6 @@
 import logging
 import threading
+import math
 from random import randrange
 from time import sleep
 
@@ -9,12 +10,18 @@ from src.processor import Processor
 logging.basicConfig(level = "INFO")
 
 class Sheluder():
-    def __init__(self, strategy, arbitration, expropriation, timeChunk, tasks_amount, processors_amount, durations, randomize_durations):
+    def __init__(self, strategy, arbitration, expropriation, iterations, timeChunk, tasks_amount, processors_amount, durations, randomize_durations):
         self.stopper = threading.Event()
         self.strategy = strategy
         self.arbitration = arbitration
         self.expropriation = expropriation
+        if iterations:
+            self.iterations = iterations
+        else:
+            #infinitive loop(breaks on Key Interruption)
+            self.iterations = 0
         self.timeChunk = timeChunk
+
         self.generate_tasks(tasks_amount, durations, randomize_durations)
         self.generate_processors(processors_amount)
 
@@ -51,6 +58,7 @@ class Sheluder():
             task.start()
 
         #Main loop
+        iter = 0
         try:
             while True:
                 for processor in self.processors:
@@ -60,10 +68,34 @@ class Sheluder():
                     task.time_tick()
                 for processor in self.processors:
                     processor.stop()
+                iter += 1
+                if iter == self.iterations:
+                    break
         except KeyboardInterrupt:
             print()
             logging.info("Interrupted. Safety exiting...")
             pass
+
+        #Collect results
+        waitingTimes = []
+        averageWaitingTimes = []
+        executions = []
+        for task in self.tasks:
+            waitingTimes += task.savedTimes
+            if len(waitingTimes) == 0:
+                averageWaitingTimes.append(0)
+            else:
+                averageWaitingTimes.append(sum(waitingTimes) / len(waitingTimes))
+            executions.append(task.executions)
+        if len(waitingTimes) == 0:
+            averageWaitingTimes.append(0)
+        else:
+            averageWaitingTimes.append(sum(waitingTimes) / len(waitingTimes))
+        averageWaitingTime = sum(waitingTimes) / len(waitingTimes)
+        logging.info("Average waiting time: {}".format())
+        logging.info("Average waiting times: {}".format(sorted(averageWaitingTimes)))
+        logging.info("Task executions: {}".format(sorted(executions)))
+        logging.info("Average executions per task: {}".format(sum(executions) / len(executions)))
 
         #End program
         self.stopper.set()
